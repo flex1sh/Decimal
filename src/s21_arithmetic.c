@@ -10,6 +10,43 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
   int check_1 = 0;
   int check_2 = 0;
   int check_3 = 0;
+  int check_4 = 0;
+
+  s21_decimal val_1;
+  s21_decimal val_2;
+  s21_decimal resultat;
+
+  for (int f = 0; f < 3; f++) {
+    val_1.bits[f] = value_1.bits[f];
+    val_2.bits[f] = value_2.bits[f];
+  }
+
+  int flag_virguile_1 = 0;
+  int flag_virguile_2 = 0;
+  int virgule_1 = (value_1.bits[3] >> 8) & 255;
+  int virgule_2 = (value_2.bits[3] >> 8) & 255;
+
+  // выделяем целую часть,чтобы сравнить только ее
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 32; j++) {
+      if (virgule_1 == 0) {
+        flag_virguile_1 = 1;
+        break;
+      }
+      s21_dec_div(val_1, val_1);
+      virgule_1--;
+    }
+    for (int j = 0; j < 32; j++) {
+      if (virgule_2 == 0) {
+        flag_virguile_2 = 1;
+        break;
+      }
+      s21_dec_div(val_2, val_2);
+      virgule_2--;
+    }
+  }
+
+  print_bits(value_1, value_2, *result);
 
   for (; position_0 < 32; position_0++) {
     printf("%d - iteration\n", position_0);
@@ -110,5 +147,37 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
     print_bits(value_1, value_2, *result);
     print_iteration(qwert, &trewq);
   }
+
+  trewq += 11;
+  for (; position_2 < 32; position_2++) {
+    printf("%d - iteration\n", position_2);
+    if (((value_1.bits[2] >> position_2) & 1) == 1) {  // 1 - 0
+      if (((value_2.bits[2] >> position_2) & 1) == 0) {
+        inversion_bit(&result->bits[2], position_2);
+      }
+    } else {
+      if (((value_2.bits[2] >> position_2) & 1) == 1) {  // 0 - 1
+        inversion_bit(&result->bits[2], position_2);
+        int c = position_2 + 1;
+        for (; c < 32; ++c) {
+          if (((value_1.bits[2] >> c) & 1) == 1) {
+            inversion_bit(&value_1.bits[2], c);
+            check_4 = 1;
+            break;
+          }
+        }
+        if (check_4) {
+          int y = c - 1;
+          for (; y > position_2; y--) {
+            inversion_bit(&value_1.bits[2], y);
+          }
+          check_4 = 0;
+        }
+      }
+    }
+    print_bits(value_1, value_2, *result);
+    print_iteration(qwert, &trewq);
+  }
+
   return 0;
 }

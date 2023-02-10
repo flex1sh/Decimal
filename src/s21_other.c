@@ -8,7 +8,6 @@ void print_bits(s21_decimal value_1, s21_decimal value_2, s21_decimal result) {
     printf(" ");
   }
   printf("\n");
-  // printf("-\n");
   printf("value_2 - ");
   for (int i = 2; i >= 0; i--) {
     printf("bits[%d] = ", i);
@@ -42,15 +41,15 @@ void test_decimal_sub() {
   s21_decimal value_2;
   s21_decimal result;
 
-  value_1.bits[0] = 5678;  // 1011000101110
-  value_1.bits[1] = 1024;  // 10000000000
+  value_1.bits[0] = -1;
+  value_1.bits[1] = 1024;
   value_1.bits[2] = 12489;
-  value_1.bits[3] = 0;
+  value_1.bits[3] = 65536;
 
-  value_2.bits[0] = 493;  // 111101101
-  value_2.bits[1] = 999;  // 1111100111
+  value_2.bits[0] = 493;
+  value_2.bits[1] = 999;
   value_2.bits[2] = 7931;
-  value_2.bits[3] = 0;
+  value_2.bits[3] = 65536;
 
   result.bits[0] = 0;
   result.bits[1] = 0;
@@ -62,17 +61,20 @@ void test_decimal_sub() {
   printf("\n");
 }
 
+// Выводит целое число в двоичном виде
 void binary_representation(int num) {
   for (int j = sizeof(num) * 8 - 1; j >= 0; j--) {
     printf("%d", (num >> j) & 1);
   }
 }
 
+// Инвертирует бит в указанной позиции
 void inversion_bit(int *result, int position) {
   int mask = 1 << position;
   *result = *result ^ mask;
 }
 
+// Преобразует целое число в массив двоичных чисел
 void int_to_binary_array() {
   int a = 459123;
   int size = 31;
@@ -86,4 +88,40 @@ void int_to_binary_array() {
     size -= 1;
   }
   printf("%s\n", aboba);
+}
+
+// Устранитель лишних нулей в дробной части и выделяет целую часть
+s21_decimal s21_dec_div(s21_decimal value, s21_decimal result) {
+  int temp0, temp1, i = 0, part;
+  temp1 = value.bits[2] % 10;
+  temp0 = value.bits[1] % 10;
+  value.bits[2] / 10;
+  value.bits[1] / 10;
+  value.bits[0] / 10;
+  part = value.bits[1];
+  while (part > 0) {
+    i++;
+    part /= 10;
+  }
+  value.bits[1] += pow(10, i) * temp1;
+  i = 0;
+  part = value.bits[0];
+  while (part > 0) {
+    i++;
+    part /= 10;
+  }
+  value.bits[0] += pow(10, i) * temp0;
+  for (int i = 0; i < 3; i++) {
+    result.bits[i] = value.bits[i];
+  }
+  return result;
+}
+
+// Выделяет дробную часть
+s21_decimal s21_help_sub(s21_decimal full, s21_decimal integ, s21_decimal result) { 
+  for(int i=0; i<3; i++) {
+    full.bits[i]-=integ.bits[i];
+    result.bits[i]=full.bits[i];
+  }
+  return result;
 }
