@@ -1,5 +1,7 @@
 NAME_IMAGE		=s21_$(shell  grep FROM Dockerfile|sed 's|:.*||'|sed 's|.*/||'|sed 's|.* ||')
 NAME_CONTAINER	=$(NAME_IMAGE)
+TEST_PATH		=testing
+
 
 all: start_cs
 
@@ -7,14 +9,14 @@ all: start_cs
 
 
 # При первом запуска конвертера
-doker_first: docker_build docker_run
+docker_first: docker_build docker_run
 
-docker_build: Dockerfile
-	docker build -t $(NAME_IMAGE) .
+docker_build:
+	docker build -t $(NAME_IMAGE) -f ./$(TEST_PATH)/Dockerfile .
 docker_run:
 	# docker run --name $(NAME_CONTAINER) --rm -i -t -v $(shell pwd):/s21_home $(NAME_IMAGE)
 	docker run --name $(NAME_CONTAINER) --rm -d -t -v $(shell pwd):/s21_home $(NAME_IMAGE)
-	# docker exec -it $(NAME_CONTAINER) cd testing
+	# docker exec -it $(NAME_CONTAINER) cd $(TEST_PATH)
 	# 2>/dev/null || true
 
 in_container:
@@ -26,13 +28,15 @@ docker_stop:
 docker_rm: docker_stop
 	docker rmi $(NAME_IMAGE) || true
 
-# Запуск конвертера. числа записывать в src/number.txt; 
-# Поддерживат: "ADD 123 456" "SUB 321 654" "INT_MAX" "INT_MIN" "MAX" "MIN"
+# start_cs - запуск конвертера. Числа записывать в src/number.txt; 
+# Поддерживат: "123 + 456" "321 - 654" "INT_MAX" "INT_MIN - 1" "MAX - MIN" "MIN"
+# Знаки математических операций обрамляются пробелами: " + "
+# Строка начинающаяся с // считается комментарием
 start_cs:
-	docker exec -it $(NAME_CONTAINER) mcs testing/decimal_convert.cs 
-	docker exec -it $(NAME_CONTAINER) mono testing/decimal_convert.exe>testing/convert.log
-	cat testing/convert.log
-	@docker exec -it $(NAME_CONTAINER) rm testing/decimal_convert.exe
+	docker exec -it $(NAME_CONTAINER) mcs $(TEST_PATH)/decimal_convert.cs 
+	docker exec -it $(NAME_CONTAINER) mono $(TEST_PATH)/decimal_convert.exe>$(TEST_PATH)/convert.log
+	cat $(TEST_PATH)/convert.log
+	@docker exec -it $(NAME_CONTAINER) rm $(TEST_PATH)/decimal_convert.exe
 
 clean:
-	rm -rf convert.log decimal_convert.exe *.out *.gch
+	rm -rf convert.log decimal_convert.exe *.out *.gch *.log */*.log

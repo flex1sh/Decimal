@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../s21_decimal.h"
+#include "test_dec.h"
 
 typedef struct {
   char name[10];
@@ -27,7 +27,7 @@ typedef struct {
     int bits[4];
     char bits_str[4][100];
   } s21_result;
-} dec_fun;
+} test_dec;
 
 char *bool_format(unsigned int number, char *str) {
   for (int i = 0; i < 32; i++) {
@@ -35,7 +35,7 @@ char *bool_format(unsigned int number, char *str) {
   }
   return str;
 }
-void print_bool(dec_fun dec) {
+void print_bool(test_dec dec) {
   char str[33] = {0};
   if (dec.b1.name && dec.b2.name) {
     if (dec.b1.bits[3] || dec.b2.bits[3]) {
@@ -60,7 +60,7 @@ void print_bool(dec_fun dec) {
   }
 }
 
-int scan_file(dec_fun dec[100]) {
+int scan_file(test_dec dec[100]) {
   FILE *myfile;
   int i = 0;
   myfile = fopen("result_cs.txt", "r");
@@ -110,7 +110,7 @@ int scan_file(dec_fun dec[100]) {
 }
 
 int main(void) {
-  dec_fun dec[100] = {0};
+  test_dec dec[100] = {0};
   int len_dec_fun = scan_file(dec);
   for (size_t i = 0; i < len_dec_fun; i++) {
     print_bool(dec[i]);

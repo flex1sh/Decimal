@@ -33,12 +33,12 @@ class Example
    }
 
       static decimal sub(string value) {
-         string[] subs = value.Split(" ");
+         string[] subs = value.Split(" - ");
          decimal d1;
          decimal d2;
-         if( decimal.TryParse(subs[1], out d1) && decimal.TryParse(subs[2], out d2) ) {
+         if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
             decimal result = d1-d2;
-            Console.WriteLine($"decimal.sub ({d1}, {d2}): {result}");
+            Console.WriteLine($"decimal: ({d1} - {d2}) = {result}");
             print_2val(d1,d2,result);
             print_2val_file(d1,d2,result, "sub");
             return result;
@@ -50,12 +50,12 @@ class Example
       }
 
    static decimal add(string value) {
-         string[] subs = value.Split(" ");
+         string[] subs = value.Split("+");
          decimal d1;
          decimal d2;
-         if( decimal.TryParse(subs[1], out d1) && decimal.TryParse(subs[2], out d2) ) {
+         if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
             decimal result = Decimal.Add (d1,d2);
-            Console.WriteLine($"decimal.add ({d1}, {d2}): {result}");
+            Console.WriteLine($"decimal: ({d1} + {d2}) = {result}");
             print_2val(d1,d2,result);
             print_2val_file(d1,d2,result, "add");
             return Decimal.Add (d1,d2);
@@ -78,19 +78,18 @@ class Example
 
    static decimal input_filter(string value){
       decimal result;
-      if(value == "MAX")
-         return decimal.MaxValue;
-      if(value == "MIN")
-         return decimal.MinValue;
-      if(value == "INT_MAX")
-         return 4294967295m;
-      if(value == "INT_MIN")
-         return -4294967295m;
-      if (value.StartsWith("ADD"))
+      if(value.Contains("INT_MAX"))
+         value = value.Replace("INT_MAX","4294967295");
+      if(value.Contains("INT_MIN"))
+         value = value.Replace("INT_MIN","-4294967295");
+      if(value.Contains("MAX"))
+         value = value.Replace("MAX",decimal.MaxValue.ToString());
+      if(value.Contains("MIN"))
+         value = value.Replace("MIN",decimal.MinValue.ToString());
+      if (value.Contains(" + "))
          return add(value);
-      if (value.StartsWith("SUB"))
+      if (value.Contains(" - "))
          return sub(value);
-      
       if(decimal.TryParse(value, out result))
          return result;
       else{
@@ -104,14 +103,15 @@ class Example
       var values = File.ReadAllLines("numbers.txt");
       File.WriteAllText("testing/result_cs.txt","");// очищает файл
       foreach (var value in values) {
-         
-        decimal value_dec = input_filter(value);
-        int[] bits = decimal.GetBits(value_dec);
-        string[] bits_str = convert(bits);
-        Console.WriteLine($"decimal: {value_dec}");
-        for(int i = bits_str.Length-1; i>=0;i--)
-        Console.WriteLine($"  bits[{i}]:    "+bits_str[i]);
-        Console.WriteLine("");
+         if(!string.IsNullOrEmpty(value) && !value.StartsWith("//")) {
+            decimal value_dec = input_filter(value);
+            int[] bits = decimal.GetBits(value_dec);
+            string[] bits_str = convert(bits);
+            Console.WriteLine($"decimal: {value_dec}");
+            for(int i = bits_str.Length-1; i>=0;i--)
+            Console.WriteLine($"  bits[{i}]:    "+bits_str[i]);
+            Console.WriteLine("");
+        }
       }
    }
 }
