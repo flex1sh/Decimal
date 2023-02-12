@@ -2,21 +2,21 @@
 
 void print_bits(s21_decimal value_1, s21_decimal value_2, s21_decimal result) {
   printf("value_1 - ");
-  for (int i = 2; i >= 0; i--) {
+  for (int i = 3; i >= 0; i--) {
     printf("bits[%d] = ", i);
     binary_representation(value_1.bits[i]);
     printf(" ");
   }
   printf("\n");
   printf("value_2 - ");
-  for (int i = 2; i >= 0; i--) {
+  for (int i = 3; i >= 0; i--) {
     printf("bits[%d] = ", i);
     binary_representation(value_2.bits[i]);
     printf(" ");
   }
   printf("\n");
   printf("result -  ");
-  for (int i = 2; i >= 0; i--) {
+  for (int i = 3; i >= 0; i--) {
     printf("bits[%d] = ", i);
     binary_representation(result.bits[i]);
     printf(" ");
@@ -41,8 +41,8 @@ void test_decimal_sub() {
   s21_decimal value_2;
   s21_decimal result;
 
-  value_1.bits[0] = -1;
-  value_1.bits[1] = 1024;
+  value_1.bits[0] = 255;
+  value_1.bits[1] = 0;
   value_1.bits[2] = 12489;
   value_1.bits[3] = 65536;
 
@@ -95,9 +95,9 @@ s21_decimal s21_dec_div(s21_decimal value, s21_decimal result) {
   int temp0, temp1, i = 0, part;
   temp1 = value.bits[2] % 10;
   temp0 = value.bits[1] % 10;
-  value.bits[2] / 10;
-  value.bits[1] / 10;
-  value.bits[0] / 10;
+  value.bits[2] /= 10;
+  value.bits[1] /= 10;
+  value.bits[0] /= 10;
   part = value.bits[1];
   while (part > 0) {
     i++;
@@ -118,10 +118,42 @@ s21_decimal s21_dec_div(s21_decimal value, s21_decimal result) {
 }
 
 // Выделяет дробную часть
-s21_decimal s21_help_sub(s21_decimal full, s21_decimal integ, s21_decimal result) { 
-  for(int i=0; i<3; i++) {
-    full.bits[i]-=integ.bits[i];
-    result.bits[i]=full.bits[i];
+s21_decimal s21_help_sub(s21_decimal full, s21_decimal integ, s21_decimal result) {
+  for (int i = 0; i < 3; i++) {
+    full.bits[i] -= integ.bits[i];
+    result.bits[i] = full.bits[i];
   }
+  return result;
+}
+
+/* А эта функция умножает на 10, нужна для твоего вычитания, чтобы соединить целую и дробную части
+Но она лишь умножает на 10, тебе нужно написать цикл, посчитать количество разрядов в дробной части,
+чтобы на это число домножить целую часть и вписать туда дробную. Но нужны всякие проверки на
+переполнение, вдруг дробь бесконечная к примеру Эту функцию нужно использовать в другом цикле, после
+цикла с подсчетом разрядов дробной части
+*/
+s21_decimal s21_dec_mul(s21_decimal value, s21_decimal result) {
+  int temp1, temp2, i = 0, part;
+  if (value.bits[0] >= pow(10, 9)) {
+    while (value.bits[0] > 0) {
+      temp1 = value.bits[0] % 10;
+      value.bits[0] /= 10;
+      i++;
+    }
+    value.bits[0] -= temp1 * pow(10, i);
+  }
+  value.bits[0] *= 10;
+  i = 0;
+  if (value.bits[1] >= pow(10, 9)) {
+    while (value.bits[1] > 0) {
+      temp2 = value.bits[1] % 10;
+      value.bits[1] /= 10;
+      i++;
+    }
+    value.bits[1] -= temp2 * pow(10, i);
+  }
+  value.bits[1] *= 10 + temp1;
+  // здесь нужна проверка на переполнение
+  value.bits[2] *= 10 + temp2;
   return result;
 }
