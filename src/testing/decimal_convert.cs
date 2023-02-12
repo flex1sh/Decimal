@@ -37,9 +37,18 @@ class Example
       decimal d1;
       decimal d2;
       if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
-         decimal result = d1-d2;
-         Console.WriteLine($"decimal: ({d1} - {d2}) = {result}");
-         print_2val(d1,d2,result);
+         decimal result = 0m;
+         try
+         {
+            checked {
+               result = d1-d2;
+               Console.WriteLine($"decimal: ({d1} - {d2}) = {result}");
+               print_2val(d1,d2,result);
+            }
+         }
+         catch (OverflowException e) {
+            Console.WriteLine($"overflow ({value})");  // output: Arithmetic operation resulted in an overflow.
+         }
          print_2val_file(d1,d2,result, "sub");
          return result;
       }
