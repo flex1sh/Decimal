@@ -1,6 +1,7 @@
 #ifndef DECIMAL_S21_DECIMAL_H
 #define DECIMAL_S21_DECIMAL_H
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -75,4 +76,13 @@ int s21_truncate(s21_decimal value, s21_decimal *result);
 
 int s21_negate(s21_decimal value, s21_decimal *result);
 
-#endif // DECIMAL_S21_DECIMAL_H
+void int_to_binary_array();
+void inversion_bit(int *result, int position);
+void binary_representation(int num);
+void test_decimal_sub();
+void print_iteration(int qwert, int *trewq);
+void print_bits(s21_decimal value_1, s21_decimal value_2, s21_decimal result);
+s21_decimal s21_dec_div(s21_decimal value, s21_decimal);
+s21_decimal s21_help_sub(s21_decimal full, s21_decimal integ, s21_decimal result);
+
+#endif  // DECIMAL_S21_DECIMAL_H

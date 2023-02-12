@@ -23,31 +23,82 @@ class Example
             string[] bits_d2_str = convert(bits_d2);
             string[] bits_result_str = convert(bits_result);
             for(int i = bits_d1_str.Length-1; i>=0;i--){
-               Console.WriteLine($"  bits1[{i}]:    "+bits_d1_str[i]);
-               Console.WriteLine($"  bits2[{i}]:    "+bits_d2_str[i]);
-               Console.WriteLine($"  bitsRes[{i}]:  "+bits_result_str[i]);
+               Console.WriteLine($"  bits1[{i}]:    "+bits_d1_str[i]+$"  : {bits_d1[i]}");
+               Console.WriteLine($"  bits2[{i}]:    "+bits_d2_str[i]+$"  : {bits_d2[i]}");
+               Console.WriteLine($"  bitsRes[{i}]:  "+bits_result_str[i]+$"  : {bits_result[i]}");
                Console.WriteLine($"");
 
             }
             return true;
    }
 
-      static decimal sub(string value) {
-         string[] subs = value.Split(" - ");
-         decimal d1;
-         decimal d2;
-         if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
-            decimal result = d1-d2;
-            Console.WriteLine($"decimal: ({d1} - {d2}) = {result}");
-            print_2val(d1,d2,result);
-            print_2val_file(d1,d2,result, "sub");
-            return result;
-         }
-         else {
-            Console.WriteLine($"overflow ({value})");
-            return 0;
-         }
+   static decimal sub(string value) {
+      string[] subs = value.Split(" - ");
+      decimal d1;
+      decimal d2;
+      if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
+         decimal result = d1-d2;
+         Console.WriteLine($"decimal: ({d1} - {d2}) = {result}");
+         print_2val(d1,d2,result);
+         print_2val_file(d1,d2,result, "sub");
+         return result;
       }
+      else {
+         Console.WriteLine($"overflow ({value})");
+         return 0;
+      }
+   }
+
+   static decimal div(string value) {
+      string[] subs = value.Split(" / ");
+      decimal d1;
+      decimal d2;
+      if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
+         decimal result = Decimal.Divide(d1, d2);
+         Console.WriteLine($"decimal: ({d1} / {d2}) = {result}");
+         print_2val(d1,d2,result);
+         print_2val_file(d1,d2,result, "div");
+         return result;
+      }
+      else {
+         Console.WriteLine($"overflow ({value})");
+         return 0;
+      }
+   }
+
+   static decimal mul(string value) {
+      string[] subs = value.Split("*");
+      decimal d1;
+      decimal d2;
+      if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
+         decimal result = Decimal.Multiply(d1, d2);
+         Console.WriteLine($"decimal: ({d1} * {d2}) = {result}");
+         print_2val(d1,d2,result);
+         print_2val_file(d1,d2,result, "mul");
+         return result;
+      }
+      else {
+         Console.WriteLine($"overflow ({value})");
+         return 0;
+      }
+   }
+
+   static decimal mod(string value) {
+      string[] subs = value.Split("%");
+      decimal d1;
+      decimal d2;
+      if( decimal.TryParse(subs[0], out d1) && decimal.TryParse(subs[1], out d2) ) {
+         decimal result = d1 % d2;
+         Console.WriteLine($"decimal: ({d1} % {d2}) = {result}");
+         print_2val(d1,d2,result);
+         print_2val_file(d1,d2,result, "mod");
+         return result;
+      }
+      else {
+         Console.WriteLine($"overflow ({value})");
+         return 0;
+      }
+   }
 
    static decimal add(string value) {
          string[] subs = value.Split("+");
@@ -71,6 +122,11 @@ class Example
       for(int j = 0;j<=3;j++){
          str[j] = Convert.ToString(bits[j], 2).PadLeft(32, '0');
       for(int i = 4;i<=35;i+=5){
+         if(j == 3 && ((i == 19) || (i == 9))){
+         if (i == 19) str[j] = str[j].Insert(i,"}");
+         if (i == 9) str[j] = str[j].Insert(i,"{");
+         }
+         else
          str[j] = str[j].Insert(i," ");
       }}
       return str;
@@ -86,10 +142,16 @@ class Example
          value = value.Replace("MAX",decimal.MaxValue.ToString());
       if(value.Contains("MIN"))
          value = value.Replace("MIN",decimal.MinValue.ToString());
-      if (value.Contains(" + "))
+      if (value.Contains("+"))
          return add(value);
       if (value.Contains(" - "))
          return sub(value);
+      if (value.Contains("*"))
+         return mul(value);
+      if (value.Contains(" / "))
+         return div(value);
+      if (value.Contains("%"))
+         return mod(value);
       if(decimal.TryParse(value, out result))
          return result;
       else{
@@ -109,7 +171,7 @@ class Example
             string[] bits_str = convert(bits);
             Console.WriteLine($"decimal: {value_dec}");
             for(int i = bits_str.Length-1; i>=0;i--)
-            Console.WriteLine($"  bits[{i}]:    "+bits_str[i]);
+            Console.WriteLine($"  bits[{i}]:     "+bits_str[i]+$"  : {bits[i]}");
             Console.WriteLine("");
         }
       }

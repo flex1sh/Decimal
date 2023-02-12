@@ -2,10 +2,20 @@ NAME_IMAGE		=s21_$(shell  grep FROM Dockerfile|sed 's|:.*||'|sed 's|.*/||'|sed '
 NAME_CONTAINER	=$(NAME_IMAGE)
 TEST_PATH		=testing
 
+SOURCES			=$(shell find ./ -name 's21_*.c')
 
 all: start_cs
 
 # mcs decimal_convert.cs && mono decimal_convert.exe | tee convert.log && rm decimal_convert.exe
+
+s21_decimal.a: $(SOURCES)
+	gcc $(FLAGS) -c $^ -lm
+	ar rc $@ s21*.o
+	rm -rf s21*.o
+	ranlib $@
+
+test: s21_decimal.a start_cs
+	cd $(TEST_PATH) && gcc test_dec.c -o $@ && ./$@ | tee $@.log && rm $@
 
 
 # При первом запуска конвертера
@@ -30,6 +40,7 @@ docker_rm: docker_stop
 
 # start_cs - запуск конвертера. Числа записывать в src/number.txt; 
 # Поддерживат: "123 + 456" "321 - 654" "INT_MAX" "INT_MIN - 1" "MAX - MIN" "MIN"
+# Математические операции: + - / * %
 # Знаки математических операций обрамляются пробелами: " + "
 # Строка начинающаяся с // считается комментарием
 start_cs:
