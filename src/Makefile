@@ -1,6 +1,6 @@
-NAME_IMAGE		=s21_$(shell  grep FROM Dockerfile|sed 's|:.*||'|sed 's|.*/||'|sed 's|.* ||')
-NAME_CONTAINER	=$(NAME_IMAGE)
 TEST_PATH		=testing
+NAME_IMAGE		=s21_$(shell  grep FROM $(TEST_PATH)/Dockerfile|sed 's|:.*||'|sed 's|.*/||'|sed 's|.* ||')
+NAME_CONTAINER	=$(NAME_IMAGE)
 
 SOURCES			=$(shell find ./ -name 's21_*.c')
 
@@ -31,7 +31,6 @@ s21_decimal.a: $(SOURCES)
 # строки (с 95 по 114 строки)
 # sub раскоменчен
 
-
 test: s21_decimal.a start_cs
 	cd $(TEST_PATH) && gcc test_dec.c ../$< -o $@ -lm && ./$@ | tee $@.log && rm $@
 
@@ -41,6 +40,7 @@ docker_first: docker_build docker_run
 
 docker_build:
 	docker build -t $(NAME_IMAGE) -f ./$(TEST_PATH)/Dockerfile .
+
 docker_run:
 	# docker run --name $(NAME_CONTAINER) --rm -i -t -v $(shell pwd):/s21_home $(NAME_IMAGE)
 	docker run --name $(NAME_CONTAINER) --rm -d -t -v $(shell pwd):/s21_home $(NAME_IMAGE)
