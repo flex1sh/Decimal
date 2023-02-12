@@ -8,17 +8,35 @@ all: start_cs
 
 # mcs decimal_convert.cs && mono decimal_convert.exe | tee convert.log && rm decimal_convert.exe
 
+.PHONY: s21_decimal.a
+	
 s21_decimal.a: $(SOURCES)
 	gcc $(FLAGS) -c $^ -lm
 	ar rc $@ s21*.o
 	rm -rf s21*.o
 	ranlib $@
 
+
+# Заускаются тесты которые сравнивают результата арифметических операторов
+# Сравнение соответствующих битов decimal c# и наших
+# Библиотека собирается из файлов s21_*.c в папке src
+# Наши функции подключаются к тестам через заголовок s21_decimal.h
+# Тесты будут сравнивать пока что только соответствующие операторы в numbers.txt
+#### Пример строк в numbers.txt для запуска соответствующих функций: 
+#### 1 + 2
+#### 1 - INT_MAX
+#### Остальное игнорирует
+# Тесты есть на все арифметические операторы, но некоторые закоменчены
+# Если функции готовы - следует раскоментить в src/testing/test_dec.c соответствующие
+# строки (с 95 по 114 строки)
+# sub раскоменчен
+
+
 test: s21_decimal.a start_cs
-	cd $(TEST_PATH) && gcc test_dec.c -o $@ && ./$@ | tee $@.log && rm $@
+	cd $(TEST_PATH) && gcc test_dec.c ../$< -o $@ -lm && ./$@ | tee $@.log && rm $@
 
 
-# При первом запуска конвертера
+# При первом запуске конвертера
 docker_first: docker_build docker_run
 
 docker_build:
@@ -51,3 +69,4 @@ start_cs:
 
 clean:
 	rm -rf convert.log decimal_convert.exe *.out *.gch *.log */*.log
+	rm -rf */s21_*.a s21_*.a

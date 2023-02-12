@@ -51,7 +51,7 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
   print_bits(value_1, value_2, *result);  // Печать первоначальных значений
 
   for (; current_position_bits_0 < 32; current_position_bits_0++) {
-    printf("%d - iteration\n", current_position_bits_0);
+    //printf("%d - iteration\n", current_position_bits_0);
     if (((val_1.bits[0] >> current_position_bits_0) & 1) == 1) {  // 1 - 0
       if (((val_2.bits[0] >> current_position_bits_0) & 1) == 0) {
         inversion_bit(&result->bits[0], current_position_bits_0);
@@ -126,7 +126,7 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
   }
   trewq += 11;
   for (; current_position_bits_1 < 32; current_position_bits_1++) {
-    printf("%d - iteration\n", current_position_bits_1);
+    //printf("%d - iteration\n", current_position_bits_1);
     if (((val_1.bits[1] >> current_position_bits_1) & 1) == 1) {  // 1 - 0
       if (((val_2.bits[1] >> current_position_bits_1) & 1) == 0) {
         inversion_bit(&result->bits[1], current_position_bits_1);
@@ -177,7 +177,7 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
 
   trewq += 11;
   for (; current_position_bits_2 < 32; current_position_bits_2++) {
-    printf("%d - iteration\n", current_position_bits_2);
+    //printf("%d - iteration\n", current_position_bits_2);
     if (((val_1.bits[2] >> current_position_bits_2) & 1) == 1) {  // 1 - 0
       if (((val_2.bits[2] >> current_position_bits_2) & 1) == 0) {
         inversion_bit(&result->bits[2], current_position_bits_2);

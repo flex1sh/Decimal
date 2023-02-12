@@ -1,39 +1,39 @@
 #include "s21_decimal.h"
 
 void print_bits(s21_decimal value_1, s21_decimal value_2, s21_decimal result) {
-  printf("value_1 - ");
+  //printf("value_1 - ");
   for (int i = 3; i >= 0; i--) {
-    printf("bits[%d] = ", i);
+    //printf("bits[%d] = ", i);
     binary_representation(value_1.bits[i]);
-    printf(" ");
+    //printf(" ");
   }
-  printf("\n");
-  printf("value_2 - ");
+  //printf("\n");
+  //printf("value_2 - ");
   for (int i = 3; i >= 0; i--) {
-    printf("bits[%d] = ", i);
+    //printf("bits[%d] = ", i);
     binary_representation(value_2.bits[i]);
-    printf(" ");
+    //printf(" ");
   }
-  printf("\n");
-  printf("result -  ");
+  //printf("\n");
+  //printf("result -  ");
   for (int i = 3; i >= 0; i--) {
-    printf("bits[%d] = ", i);
+    //printf("bits[%d] = ", i);
     binary_representation(result.bits[i]);
-    printf(" ");
+    //printf(" ");
   }
-  printf("\n");
+  //printf("\n");
 }
 
 void print_iteration(int qwert, int *trewq) {
   for (int i = 0; i < qwert - *trewq - 1; i++) {
-    printf("-");
+    //printf("-");
   }
-  printf("^");
+  //printf("^");
   for (int i = *trewq; i > 0; i--) {
-    printf("-");
+    //printf("-");
   }
   *trewq += 1;
-  printf("\n");
+  //printf("\n");
 }
 
 void test_decimal_sub() {
@@ -60,7 +60,7 @@ void test_decimal_sub() {
 
   s21_sub(value_1, value_2, &result);
 
-  printf("\n");
+  //printf("\n");
 }
 
 // Выводит целое число в двоичном виде
@@ -68,9 +68,9 @@ void binary_representation(int num) {
   for (int j = sizeof(num) * 8 - 1; j >= 0; j--) {
     int bit = (num >> j) & 1;
     if (bit) {
-      printf("\033[31m%d\033[0m", bit);
+      //printf("\033[31m%d\033[0m", bit);
     } else {
-      printf("%d", bit);
+      //printf("%d", bit);
     }
   }
 }
@@ -94,7 +94,7 @@ void int_to_binary_array() {
     a = a / 2;
     size -= 1;
   }
-  printf("%s\n", aboba);
+  //printf("%s\n", aboba);
 }
 
 // Устранитель лишних нулей в дробной части и выделяет целую часть
