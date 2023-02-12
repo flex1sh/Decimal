@@ -41,15 +41,17 @@ void test_decimal_sub() {
   s21_decimal value_2;
   s21_decimal result;
 
+  // 110000110010010000000000000000000000000000000000000000000000000000000011111111 - 230381386736558590132479
   value_1.bits[0] = 255;
   value_1.bits[1] = 0;
   value_1.bits[2] = 12489;
-  value_1.bits[3] = 65536;
+  value_1.bits[3] = 196608;  // 3
 
+  // 11110111110110000000000000000000000111110011100000000000000000000000111101101 - 146301127252881126195693
   value_2.bits[0] = 493;
   value_2.bits[1] = 999;
   value_2.bits[2] = 7931;
-  value_2.bits[3] = 65536;
+  value_2.bits[3] = 196608;  // 3
 
   result.bits[0] = 0;
   result.bits[1] = 0;
@@ -64,7 +66,12 @@ void test_decimal_sub() {
 // Выводит целое число в двоичном виде
 void binary_representation(int num) {
   for (int j = sizeof(num) * 8 - 1; j >= 0; j--) {
-    printf("%d", (num >> j) & 1);
+    int bit = (num >> j) & 1;
+    if (bit) {
+      printf("\033[31m%d\033[0m", bit);
+    } else {
+      printf("%d", bit);
+    }
   }
 }
 
