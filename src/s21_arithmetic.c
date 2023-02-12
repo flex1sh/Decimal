@@ -9,10 +9,10 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
   int current_position_bits_2 = 0;
   int check_0 = 0;
   int check_1 = 0;
-  int check_1_1 = 0;
   int check_2 = 0;
   int check_3 = 0;
   int check_4 = 0;
+  int check_5 = 0;
 
   s21_decimal val_1;
   s21_decimal val_2;
@@ -29,24 +29,24 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
   int virguile_2 = (value_2.bits[3] >> 8) & 255;
 
   // выделяем целую часть,чтобы сравнить только ее
-  for (int start_search_index_0 = 0; start_search_index_0 < 3; start_search_index_0++) {
-    for (int j = 0; j < 32; j++) {
-      if (virguile_1 == 0) {
-        flag_virguile_1 = 1;
-        break;
-      }
-      val_1 = s21_dec_div(val_1, val_1);
-      virguile_1--;
-    }
-    for (int j = 0; j < 32; j++) {
-      if (virguile_2 == 0) {
-        flag_virguile_2 = 1;
-        break;
-      }
-      val_2 = s21_dec_div(val_2, val_2);
-      virguile_2--;
-    }
-  }
+  // for (int start_search_index_0 = 0; start_search_index_0 < 3; start_search_index_0++) {
+  //   for (int j = 0; j < 32; j++) {
+  //     if (virguile_1 == 0) {
+  //       flag_virguile_1 = 1;
+  //       break;
+  //     }
+  //     val_1 = s21_dec_div(val_1, val_1);
+  //     virguile_1--;
+  //   }
+  //   for (int j = 0; j < 32; j++) {
+  //     if (virguile_2 == 0) {
+  //       flag_virguile_2 = 1;
+  //       break;
+  //     }
+  //     val_2 = s21_dec_div(val_2, val_2);
+  //     virguile_2--;
+  //   }
+  // }
 
   print_bits(value_1, value_2, *result);  // Печать первоначальных значений
 
@@ -57,10 +57,8 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
         inversion_bit(&result->bits[0], current_position_bits_0);
       }
     } else {
-      if (((val_2.bits[0] >> current_position_bits_0) & 1) == 1) {  // 0 - 1
-        inversion_bit(&result->bits[0],
-                      current_position_bits_0);                      // Нужна проверка нашел ли старший бит и только
-                                                                     // тогда инвертировать
+      if (((val_2.bits[0] >> current_position_bits_0) & 1) == 1) {   // 0 - 1
+        inversion_bit(&result->bits[0], current_position_bits_0);    // Нужна проверка нашел ли старший бит и только // тогда инвертировать
         int start_search_index_0 = current_position_bits_0 + 1;      // Индест старта поиска старшего бита
         for (; start_search_index_0 < 32; ++start_search_index_0) {  // Поиск старшего бита
           if (((val_1.bits[0] >> start_search_index_0) & 1) == 1) {
@@ -99,11 +97,11 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
             for (; start_search_index_2 < 32; start_search_index_2++) {
               if (((val_1.bits[2] >> start_search_index_2) & 1) == 1) {
                 inversion_bit(&val_1.bits[2], start_search_index_2);
-                check_1_1 = 1;
+                check_2 = 1;
                 break;
               }
             }
-            if (check_1_1) {
+            if (check_2) {
               int invertion_index_2 = start_search_index_2 - 1;  // Если нашел инвертируем в bits[2]
               for (; invertion_index_2 >= 0; invertion_index_2--) {
                 inversion_bit(&val_1.bits[2], invertion_index_2);
@@ -115,7 +113,7 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
               for (; invertion_index_0_2 > current_position_bits_0; invertion_index_0_2--) {
                 inversion_bit(&val_1.bits[0], invertion_index_0_2);
               }
-              check_1_1 = 0;
+              check_2 = 0;
             }
           }
         }
@@ -134,39 +132,39 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
     } else {
       if (((val_2.bits[1] >> current_position_bits_1) & 1) == 1) {  // 0 - 1
         inversion_bit(&result->bits[1], current_position_bits_1);
-        int z = current_position_bits_1 + 1;  // z индекс старта поиска в bits[1];
-        for (; z < 32; ++z) {
-          if (((val_1.bits[1] >> z) & 1) == 1) {
-            inversion_bit(&val_1.bits[1], z);
-            check_2 = 1;
+        int start_search_index_1_1 = current_position_bits_1 + 1;  // Индекс старта поиска старшего бита в bits[1];
+        for (; start_search_index_1_1 < 32; ++start_search_index_1_1) {
+          if (((val_1.bits[1] >> start_search_index_1_1) & 1) == 1) {
+            inversion_bit(&val_1.bits[1], start_search_index_1_1);
+            check_3 = 1;
             break;
           }
         }
-        if (check_2) {
-          int k = z - 1;
-          for (; k > current_position_bits_1; k--) {
-            inversion_bit(&val_1.bits[1], k);
+        if (check_3) {  // Если нашел начинаем инвертировать пока не дойдем до индекса старта поиска
+          int inversion_index_1_1 = start_search_index_1_1 - 1;
+          for (; inversion_index_1_1 > current_position_bits_1; inversion_index_1_1--) {
+            inversion_bit(&val_1.bits[1], inversion_index_1_1);
           }
-          check_2 = 0;
-        } else {
-          int pos_2 = 0;
-          for (; pos_2 < 32; pos_2++) {
-            if (((val_1.bits[2] >> pos_2) & 1) == 1) {
-              inversion_bit(&val_1.bits[2], pos_2);
-              check_3 = 1;
+          check_3 = 0;
+        } else {  // Иначе переходим в bits[2] и ищем там
+          int start_search_index_2_2 = 0;
+          for (; start_search_index_2_2 < 32; start_search_index_2_2++) {
+            if (((val_1.bits[2] >> start_search_index_2_2) & 1) == 1) {
+              inversion_bit(&val_1.bits[2], start_search_index_2_2);
+              check_4 = 1;
               break;
             }
           }
-          if (check_3) {
-            int m = pos_2 - 1;
-            for (; m >= 0; m--) {
-              inversion_bit(&val_1.bits[2], m);
+          if (check_4) {  // Если нашел инвертируем
+            int invertion_index_2_2 = start_search_index_2_2 - 1;
+            for (; invertion_index_2_2 >= 0; invertion_index_2_2--) {
+              inversion_bit(&val_1.bits[2], invertion_index_2_2);
             }
-            int k = z - 1;
-            for (; k > current_position_bits_0; k--) {
-              inversion_bit(&val_1.bits[1], k);
+            int invertion_index_1_1_1 = start_search_index_1_1 - 1;
+            for (; invertion_index_1_1_1 > current_position_bits_1; invertion_index_1_1_1--) {
+              inversion_bit(&val_1.bits[1], invertion_index_1_1_1);
             }
-            check_3 = 0;
+            check_4 = 0;
           }
         }
       }
@@ -174,7 +172,6 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
     print_bits(val_1, val_2, *result);
     print_iteration(qwert, &trewq);
   }
-
   trewq += 11;
   for (; current_position_bits_2 < 32; current_position_bits_2++) {
     printf("%d - iteration\n", current_position_bits_2);
@@ -185,20 +182,20 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
     } else {
       if (((val_2.bits[2] >> current_position_bits_2) & 1) == 1) {  // 0 - 1
         inversion_bit(&result->bits[2], current_position_bits_2);
-        int c = current_position_bits_2 + 1;
-        for (; c < 32; ++c) {
-          if (((val_1.bits[2] >> c) & 1) == 1) {
-            inversion_bit(&val_1.bits[2], c);
-            check_4 = 1;
+        int start_search_index_2_2_2 = current_position_bits_2 + 1;
+        for (; start_search_index_2_2_2 < 32; ++start_search_index_2_2_2) {
+          if (((val_1.bits[2] >> start_search_index_2_2_2) & 1) == 1) {
+            inversion_bit(&val_1.bits[2], start_search_index_2_2_2);
+            check_5 = 1;
             break;
           }
         }
-        if (check_4) {
-          int y = c - 1;
-          for (; y > current_position_bits_2; y--) {
-            inversion_bit(&val_1.bits[2], y);
+        if (check_5) {
+          int invertion_index_2_2_2 = start_search_index_2_2_2 - 1;
+          for (; invertion_index_2_2_2 > current_position_bits_2; invertion_index_2_2_2--) {
+            inversion_bit(&val_1.bits[2], invertion_index_2_2_2);
           }
-          check_4 = 0;
+          check_5 = 0;
         }
       }
     }
@@ -206,11 +203,11 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {  //
     print_iteration(qwert, &trewq);
   }
 
-  if ((virguile_1 > 0) || (virguile_2 > 0)) {  // Проверка есть ли дробная часть
-    // !!!!
-    s21_help_sub(value_1, val_1, val_1);
-    s21_help_sub(value_2, val_2, val_2);
-  }
+  // if ((virguile_1 > 0) || (virguile_2 > 0)) {  // Проверка есть ли дробная часть
+  //   // !!!!
+  //   s21_help_sub(value_1, val_1, val_1);
+  //   s21_help_sub(value_2, val_2, val_2);
+  // }
 
   return 0;
 }
