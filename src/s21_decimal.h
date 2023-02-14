@@ -84,5 +84,6 @@ void print_iteration(int qwert, int *trewq);
 void print_bits(s21_decimal value_1, s21_decimal value_2, s21_decimal result);
 s21_decimal s21_dec_div(s21_decimal value, s21_decimal);
 s21_decimal s21_help_sub(s21_decimal full, s21_decimal integ, s21_decimal result);
+s21_decimal s21_dec_mul(s21_decimal value, s21_decimal result);
 
 #endif  // DECIMAL_S21_DECIMAL_H

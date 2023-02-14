@@ -41,15 +41,15 @@ void test_decimal_sub() {
   s21_decimal value_2;
   s21_decimal result;
 
-  value_1.bits[0] = 9573;
-  value_1.bits[1] = 2;
-  value_1.bits[2] = 1086466;
-  value_1.bits[3] = 196608;  // 3
+  value_1.bits[0] = 1421;
+  value_1.bits[1] = 65728;
+  value_1.bits[2] = 1984532;
+  value_1.bits[3] = 1572864;
 
   value_2.bits[0] = 102;
   value_2.bits[1] = 6666;
-  value_2.bits[2] = 1005642642;
-  value_2.bits[3] = 196608;  // 3
+  value_2.bits[2] = 1086466;
+  value_2.bits[3] = 196608;
 
   result.bits[0] = 0;
   result.bits[1] = 0;
@@ -66,7 +66,7 @@ void binary_representation(int num) {
   for (int j = sizeof(num) * 8 - 1; j >= 0; j--) {
     int bit = (num >> j) & 1;
     if (bit) {
-      printf("\033[31m%d\033[0m", bit);
+      printf("\033[31m%d\033[0m", bit); // \033[31m - вывести 1 красным
     } else {
       printf("%d", bit);
     }
